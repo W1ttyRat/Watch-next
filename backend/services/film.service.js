@@ -1,9 +1,13 @@
 import { authClient } from '../config/db.js';
 
 const queryAllFilms = async () => {
-    const { data, error } = await authClient
-        .from('items')
-        .select('*');
+    let query = authClient.from('items').select('*');
+
+    if (genre) {
+        query = query.eq('genre', genre);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
         console.error('Supabase error:', error);
