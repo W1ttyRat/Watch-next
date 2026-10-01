@@ -14,9 +14,47 @@ const queryAllFilms = async () => {
     return data;
 };
 
+const queryCreateFilm = async (filmData) => {
+    const { data, error } = await authClient
+        .from('items')
+        .insert([filmData]);
+
+    if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+    }
+    console.log('Created film:', data);
+
+    return data;
+}
+
+const queryDeleteFilm = async (filmId) => {
+    const { data, error } = await authClient
+        .from('items')
+        .delete()
+        .eq('id', filmId);
+
+    if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+    }
+    console.log('Deleted film:', data);
+    res.status(200).json(data);
+
+    return data;
+}
+
 class FilmService {
     async getAllFilms() {
         return await queryAllFilms();
+    }
+
+    async createFilm(filmData) {
+        return await queryCreateFilm(filmData);
+    }
+
+    async deleteFilm(filmId) {
+        return await queryDeleteFilm(filmId);
     }
 }
 
