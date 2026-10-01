@@ -1,7 +1,5 @@
-import { authClient } from '../config/db.js';
-
-const queryAllFilms = async () => {
-    let query = authClient.from('items').select('*');
+const queryAllFilms = async (db, genre) => {
+    let query = db.from('items').select('*');
 
     if (genre) {
         query = query.eq('genre', genre);
@@ -50,8 +48,8 @@ const queryDeleteFilm = async (db, filmId) => {
 }
 
 class FilmService {
-    async getAllFilms(db) {
-        return await queryAllFilms(db);
+    async getAllFilms(db, genre) {
+        return await queryAllFilms(db, genre);
     }
 
     async createFilm(db, filmData) {
