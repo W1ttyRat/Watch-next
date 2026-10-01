@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-router.get('/film', filmController.getAllFilms);
+router.get('/film', requireGuest, filmController.getAllFilms);
 router.post('/film', requireGuest, filmController.createFilm);
 router.delete('/film/:id', requireGuest, filmController.deleteFilm);
 

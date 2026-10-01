@@ -1,7 +1,5 @@
-import { authClient } from '../config/db.js';
-
-const queryAllFilms = async () => {
-    const { data, error } = await authClient
+const queryAllFilms = async (db) => {
+    const { data, error } = await db
         .from('items')
         .select('*');
 
@@ -14,10 +12,12 @@ const queryAllFilms = async () => {
     return data;
 };
 
-const queryCreateFilm = async (filmData) => {
-    const { data, error } = await authClient
+const queryCreateFilm = async (db, filmData) => {
+    const { data, error } = await db
         .from('items')
-        .insert([filmData]);
+        .insert([filmData])
+        .select()
+        .single();
 
     if (error) {
         console.error('Supabase error:', error);
@@ -28,8 +28,8 @@ const queryCreateFilm = async (filmData) => {
     return data;
 }
 
-const queryDeleteFilm = async (filmId) => {
-    const { data, error } = await authClient
+const queryDeleteFilm = async (db, filmId) => {
+    const { data, error } = await db
         .from('items')
         .delete()
         .eq('id', filmId);
@@ -39,22 +39,21 @@ const queryDeleteFilm = async (filmId) => {
         throw error;
     }
     console.log('Deleted film:', data);
-    res.status(200).json(data);
 
     return data;
 }
 
 class FilmService {
-    async getAllFilms() {
-        return await queryAllFilms();
+    async getAllFilms(db) {
+        return await queryAllFilms(db);
     }
 
-    async createFilm(filmData) {
-        return await queryCreateFilm(filmData);
+    async createFilm(db, filmData) {
+        return await queryCreateFilm(db, filmData);
     }
 
-    async deleteFilm(filmId) {
-        return await queryDeleteFilm(filmId);
+    async deleteFilm(db, filmId) {
+        return await queryDeleteFilm(db, filmId);
     }
 }
 
