@@ -11,10 +11,26 @@ const getAllFilms = async (req, res) => {
 }
 
 const createFilm = async (req, res) => {
+
+    const { title, genre } = req.body;
+    const allowedGenres = ['comedy', 'action', 'drama', 'other'];
+
+    if (
+        typeof title !== 'string' ||
+        title.trim().length < 1 ||
+        title.trim().length > 100 ||
+        !allowedGenres.includes(genre)
+    ) {
+        return res.status(400).json({
+            error: 'Title must be 1-100 characters and genre must be valid',
+        });
+    }
+
     const filmService = new FilmService();
     try {
         const newFilm = await filmService.createFilm(req.db, {
-            ...req.body,
+            title: title.trim(),
+            genre,
             owner_id: req.user.id,
         });
         res.status(201).json(newFilm);
